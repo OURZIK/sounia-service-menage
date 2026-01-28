@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Ourzik Service Ménage</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0A6E5C;
+            --primary-light: #0D8F75;
+            --secondary: #F7B731;
+            --accent: #E84855;
+            --bg-cream: #FAF8F5;
+            --bg-white: #FFFFFF;
+            --text-dark: #1A1A1A;
+            --text-gray: #6B7280;
+            --border: #E5E7EB;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'DM Sans', sans-serif;
+            color: var(--text-dark);
+            background: var(--bg-cream);
+            line-height: 1.6;
+        }
+        
+        /* Login Page */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+        }
+        
+        .login-box {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 450px;
+            width: 100%;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .login-box h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+        
+        .login-box p {
+            color: var(--text-gray);
+            margin-bottom: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(10, 110, 92, 0.1);
+        }
+        
+        .btn-login {
+            width: 100%;
+            padding: 1.2rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'DM Sans', sans-serif;
+        }
+        
+        .btn-login:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(10, 110, 92, 0.3);
+        }
+        
+        .error-message {
+            background: #FEE;
+            color: #C00;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+        
+        /* Admin Dashboard */
+        .admin-container {
+            display: none;
+            min-height: 100vh;
+        }
+        
+        .admin-container.active {
+            display: block;
+        }
+        
+        .admin-header {
+            background: var(--bg-white);
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .admin-header h1 {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary);
+            font-size: 1.8rem;
+        }
+        
+        .btn-logout {
+            padding: 0.8rem 1.5rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-logout:hover {
+            background: #d63847;
+            transform: translateY(-2px);
+        }
+        
+        .admin-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--border);
+        }
+        
+        .tab {
+            padding: 1rem 2rem;
+            background: none;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-gray);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            font-family: 'DM Sans', sans-serif;
+        }
+        
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .services-list {
+            display: grid;
+            gap: 1.5rem;
+        }
+        
+        .service-item {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: grid;
+            grid-template-columns: 100px 1fr auto;
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        .service-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 12px;
+            object-fit: cover;
+            background: var(--bg-cream);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+        
+        .service-info h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .service-info p {
+            color: var(--text-gray);
+            margin-bottom: 0.5rem;
+        }
+        
+        .service-price {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+        
+        .service-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-family: 'DM Sans', sans-serif;
+        }
+        
+        .btn-edit {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-edit:hover {
+            background: var(--primary-light);
+        }
+        
+        .btn-delete {
+            background: var(--accent);
+            color: white;
+        }
+        
+        .btn-delete:hover {
+            background: #d63847;
+        }
+        
+        .btn-add {
+            background: var(--secondary);
+            color: var(--text-dark);
+            padding: 1rem 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .btn-add:hover {
+            background: #e5a91f;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: scaleIn 0.3s ease-out;
+        }
+        
+        @keyframes scaleIn {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .modal-content h2 {
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 1.5rem;
+        }
+        
+        .image-upload {
+            border: 2px dashed var(--border);
+            padding: 2rem;
+            text-align: center;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 1rem;
+        }
+        
+        .image-upload:hover {
+            border-color: var(--primary);
+            background: var(--bg-cream);
+        }
+        
+        .image-upload input {
+            display: none;
+        }
+        
+        .image-preview {
+            max-width: 100%;
+            max-height: 200px;
+            margin-top: 1rem;
+            border-radius: 12px;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .btn-save {
+            flex: 1;
+            background: var(--primary);
+            color: white;
+            padding: 1rem;
+        }
+        
+        .btn-save:hover {
+            background: var(--primary-light);
+        }
+        
+        .btn-cancel {
+            background: var(--text-gray);
+            color: white;
+            padding: 1rem;
+        }
+        
+        .btn-cancel:hover {
+            background: #4B5563;
+        }
+        
+        .tarifs-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+        
+        .tarif-item {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        .tarif-info h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .tarif-input {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .tarif-input input {
+            width: 150px;
+            padding: 0.8rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        
+        .success-message.show {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="login-container">
+        <div class="login-box">
+            <h1>Administration</h1>
+            <p>Ourzik Service Ménage</p>
+            
+            <div id="errorMessage" class="error-message"></div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Identifiant</label>
+                    <input type="text" id="username" required placeholder="admin">
+                </div>
+                
+                <div class="form-group">
+                    <label>Mot de passe</label>
+                    <input type="password" id="password" required placeholder="••••••••">
+                </div>
+                
+                <button type="submit" class="btn-login">Se connecter</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="adminPage" class="admin-container">
+        <header class="admin-header">
+            <h1>Ourzik Service Ménage - Administration</h1>
+            <button class="btn-logout" onclick="logout()">Déconnexion</button>
+        </header>
+        
+        <div class="admin-content">
+            <div id="successMessage" class="success-message"></div>
+            
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('services')">Services</button>
+                <button class="tab" onclick="switchTab('tarifs')">Tarifs</button>
+            </div>
+            
+            <!-- Services Tab -->
+            <div id="servicesTab" class="tab-content active">
+                <button class="btn btn-add" onclick="openAddServiceModal()">
+                    + Ajouter un service
+                </button>
+                
+                <div id="servicesList" class="services-list">
+                    <!-- Services will be loaded here -->
+                </div>
+            </div>
+            
+            <!-- Tarifs Tab -->
+            <div id="tarifsTab" class="tab-content">
+                <div id="tarifsList" class="tarifs-grid">
+                    <!-- Tarifs will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Service Modal -->
+    <div id="serviceModal" class="modal">
+        <div class="modal-content">
+            <h2 id="modalTitle">Ajouter un service</h2>
+            
+            <form id="serviceForm">
+                <div class="form-group">
+                    <label>Icône (emoji)</label>
+                    <input type="text" id="serviceIcon" required placeholder="🏠" maxlength="2">
+                </div>
+                
+                <div class="form-group">
+                    <label>Nom du service</label>
+                    <input type="text" id="serviceName" required placeholder="Ménage régulier">
+                </div>
+                
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="serviceDescription" rows="4" required placeholder="Décrivez le service..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Tarif</label>
+                    <input type="text" id="servicePrice" required placeholder="À partir de 25€/h">
+                </div>
+                
+                <div class="form-group">
+                    <label>Image (optionnel)</label>
+                    <div class="image-upload" onclick="document.getElementById('serviceImage').click()">
+                        <p>📸 Cliquez pour ajouter une image</p>
+                        <input type="file" id="serviceImage" accept="image/*" onchange="previewImage(this)">
+                        <img id="imagePreview" class="image-preview" style="display:none;">
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-save">Enregistrer</button>
+                    <button type="button" class="btn btn-cancel" onclick="closeModal()">Annuler</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Authentication - CHANGEZ LE MOT DE PASSE ICI !
+        const ADMIN_CREDENTIALS = {
+            username: 'admin',
+            password: 'ourzik2026' // CHANGEZ CE MOT DE PASSE !
+        };
+
+        // Local Storage Keys
+        const STORAGE_KEYS = {
+            services: 'ourzik_services',
+            tarifs: 'ourzik_tarifs',
+            isLoggedIn: 'ourzik_logged_in'
+        };
+
+        // Initialize default services
+        function initializeDefaultData() {
+            if (!localStorage.getItem(STORAGE_KEYS.services)) {
+                const defaultServices = [
+                    {
+                        id: 1,
+                        icon: '🏠',
+                        name: 'Ménage Régulier',
+                        description: 'Entretien hebdomadaire ou bimensuel de votre domicile. Nettoyage complet de toutes les pièces.',
+                        price: 'À partir de 25€/h',
+                        image: null
+                    },
+                    {
+                        id: 2,
+                        icon: '✨',
+                        name: 'Grand Ménage',
+                        description: 'Nettoyage en profondeur de votre logement. Idéal pour un déménagement ou un changement de saison.',
+                        price: 'À partir de 30€/h',
+                        image: null
+                    },
+                    {
+                        id: 3,
+                        icon: '🏥',
+                        name: 'Cliniques & Établissements Médicaux',
+                        description: 'Nettoyage et désinfection des établissements de santé selon les normes sanitaires strictes.',
+                        price: 'Sur devis',
+                        image: null
+                    },
+                    {
+                        id: 4,
+                        icon: '🏢',
+                        name: 'Bureaux & Entreprises',
+                        description: 'Entretien professionnel de vos locaux professionnels. Intervention en soirée ou week-end possible.',
+                        price: 'Sur devis',
+                        image: null
+                    },
+                    {
+                        id: 5,
+                        icon: '🪟',
+                        name: 'Nettoyage Vitres',
+                        description: 'Nettoyage intérieur et extérieur de vos vitres pour une clarté parfaite toute l\'année.',
+                        price: 'À partir de 40€',
+                        image: null
+                    },
+                    {
+                        id: 6,
+                        icon: '👔',
+                        name: 'Repassage',
+                        description: 'Service de repassage à domicile. Vos vêtements impeccables sans effort.',
+                        price: '15€/h',
+                        image: null
+                    },
+                    {
+                        id: 7,
+                        icon: '🏡',
+                        name: 'Après Travaux',
+                        description: 'Nettoyage post-rénovation pour retrouver un intérieur propre et habitable rapidement.',
+                        price: 'Sur devis',
+                        image: null
+                    }
+                ];
+                localStorage.setItem(STORAGE_KEYS.services, JSON.stringify(defaultServices));
+            }
+
+            if (!localStorage.getItem(STORAGE_KEYS.tarifs)) {
+                const defaultTarifs = {
+                    menageRegulier: 25,
+                    grandMenage: 30,
+                    clinique: 35,
+                    bureau: 28,
+                    vitres: 40,
+                    repassage: 15
+                };
+                localStorage.setItem(STORAGE_KEYS.tarifs, JSON.stringify(defaultTarifs));
+            }
+        }
+
+        // Check authentication
+        function checkAuth() {
+            const isLoggedIn = localStorage.getItem(STORAGE_KEYS.isLoggedIn);
+            if (isLoggedIn === 'true') {
+                showAdminPanel();
+            }
+        }
+
+        // Login
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+                localStorage.setItem(STORAGE_KEYS.isLoggedIn, 'true');
+                showAdminPanel();
+            } else {
+                const errorMsg = document.getElementById('errorMessage');
+                errorMsg.textContent = 'Identifiant ou mot de passe incorrect';
+                errorMsg.classList.add('show');
+                
+                setTimeout(() => {
+                    errorMsg.classList.remove('show');
+                }, 3000);
+            }
+        });
+
+        // Logout
+        function logout() {
+            localStorage.removeItem(STORAGE_KEYS.isLoggedIn);
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('adminPage').classList.remove('active');
+        }
+
+        // Show admin panel
+        function showAdminPanel() {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('adminPage').classList.add('active');
+            loadServices();
+            loadTarifs();
+        }
+
+        // Tab switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName + 'Tab').classList.add('active');
+        }
+
+        // Load services
+        function loadServices() {
+            const services = JSON.parse(localStorage.getItem(STORAGE_KEYS.services)) || [];
+            const servicesList = document.getElementById('servicesList');
+            
+            servicesList.innerHTML = services.map(service => `
+                <div class="service-item">
+                    <div class="service-image">${service.icon}</div>
+                    <div class="service-info">
+                        <h3>${service.name}</h3>
+                        <p>${service.description}</p>
+                        <div class="service-price">${service.price}</div>
+                    </div>
+                    <div class="service-actions">
+                        <button class="btn btn-edit" onclick="editService(${service.id})">Modifier</button>
+                        <button class="btn btn-delete" onclick="deleteService(${service.id})">Supprimer</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Load tarifs
+        function loadTarifs() {
+            const tarifs = JSON.parse(localStorage.getItem(STORAGE_KEYS.tarifs)) || {};
+            const tarifsList = document.getElementById('tarifsList');
+            
+            const tarifLabels = {
+                menageRegulier: 'Ménage Régulier (€/h)',
+                grandMenage: 'Grand Ménage (€/h)',
+                clinique: 'Clinique/Médical (€/h)',
+                bureau: 'Bureau/Entreprise (€/h)',
+                vitres: 'Nettoyage Vitres (€)',
+                repassage: 'Repassage (€/h)'
+            };
+            
+            tarifsList.innerHTML = Object.keys(tarifLabels).map(key => `
+                <div class="tarif-item">
+                    <div class="tarif-info">
+                        <h3>${tarifLabels[key]}</h3>
+                    </div>
+                    <div class="tarif-input">
+                        <input type="number" value="${tarifs[key] || 0}" 
+                               onchange="updateTarif('${key}', this.value)" step="0.5">
+                        <span>€</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update tarif
+        function updateTarif(key, value) {
+            const tarifs = JSON.parse(localStorage.getItem(STORAGE_KEYS.tarifs)) || {};
+            tarifs[key] = parseFloat(value);
+            localStorage.setItem(STORAGE_KEYS.tarifs, JSON.stringify(tarifs));
+            showSuccess('Tarif mis à jour avec succès !');
+        }
+
+        // Modal functions
+        let currentServiceId = null;
+
+        function openAddServiceModal() {
+            currentServiceId = null;
+            document.getElementById('modalTitle').textContent = 'Ajouter un service';
+            document.getElementById('serviceForm').reset();
+            document.getElementById('imagePreview').style.display = 'none';
+            document.getElementById('serviceModal').classList.add('active');
+        }
+
+        function editService(id) {
+            const services = JSON.parse(localStorage.getItem(STORAGE_KEYS.services)) || [];
+            const service = services.find(s => s.id === id);
+            
+            if (service) {
+                currentServiceId = id;
+                document.getElementById('modalTitle').textContent = 'Modifier le service';
+                document.getElementById('serviceIcon').value = service.icon;
+                document.getElementById('serviceName').value = service.name;
+                document.getElementById('serviceDescription').value = service.description;
+                document.getElementById('servicePrice').value = service.price;
+                
+                if (service.image) {
+                    document.getElementById('imagePreview').src = service.image;
+                    document.getElementById('imagePreview').style.display = 'block';
+                }
+                
+                document.getElementById('serviceModal').classList.add('active');
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('serviceModal').classList.remove('active');
+        }
+
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('imagePreview');
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Save service
+        document.getElementById('serviceForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const services = JSON.parse(localStorage.getItem(STORAGE_KEYS.services)) || [];
+            
+            const serviceData = {
+                id: currentServiceId || Date.now(),
+                icon: document.getElementById('serviceIcon').value,
+                name: document.getElementById('serviceName').value,
+                description: document.getElementById('serviceDescription').value,
+                price: document.getElementById('servicePrice').value,
+                image: document.getElementById('imagePreview').src || null
+            };
+            
+            if (currentServiceId) {
+                const index = services.findIndex(s => s.id === currentServiceId);
+                services[index] = serviceData;
+            } else {
+                services.push(serviceData);
+            }
+            
+            localStorage.setItem(STORAGE_KEYS.services, JSON.stringify(services));
+            closeModal();
+            loadServices();
+            showSuccess('Service enregistré avec succès !');
+        });
+
+        // Delete service
+        function deleteService(id) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer ce service ?')) {
+                let services = JSON.parse(localStorage.getItem(STORAGE_KEYS.services)) || [];
+                services = services.filter(s => s.id !== id);
+                localStorage.setItem(STORAGE_KEYS.services, JSON.stringify(services));
+                loadServices();
+                showSuccess('Service supprimé avec succès !');
+            }
+        }
+
+        // Show success message
+        function showSuccess(message) {
+            const successMsg = document.getElementById('successMessage');
+            successMsg.textContent = message;
+            successMsg.classList.add('show');
+            
+            setTimeout(() => {
+                successMsg.classList.remove('show');
+            }, 3000);
+        }
+
+        // Initialize
+        initializeDefaultData();
+        checkAuth();
+    </script>
+</body>
+</html>
